@@ -1,0 +1,276 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--paper);
+  /* Dot-grid notebook paper */
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  /* Shantell Sans axes: a little hand-drawn looseness, no bounce. */
+  font-variation-settings:
+    'INFM' 24,
+    'BNCE' 0,
+    'SPAC' 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* Text links: ink underline over a swipe of highlighter. */
+.link,
+.prose a {
+  text-decoration: underline;
+  text-decoration-color: var(--link-line);
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.2em;
+  background: linear-gradient(var(--link-stripe), var(--link-stripe)) no-repeat 0 92% / 100% 0.42em;
+  transition:
+    background-size 0.14s ease-out,
+    color 0.14s ease-out;
+}
+
+.link:hover,
+.prose a:hover {
+  background: var(--marker);
+  color: var(--on-marker);
+  text-decoration-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+:root[data-theme='dark'] :focus-visible {
+  outline-color: var(--marker);
+}
+
+::selection {
+  background: var(--marker);
+  color: var(--on-marker);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.muted {
+  color: var(--graphite);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.62rem 1.15rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-0);
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.12s,
+    color 0.12s,
+    transform 0.12s;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--marker);
+  color: var(--on-marker);
+  border-color: var(--on-marker);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.button--primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button--quiet {
+  border-color: transparent;
+  padding-inline: 0.6rem;
+}
+
+.button--danger {
+  border-color: var(--red-pencil);
+  color: var(--red-pencil);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: var(--red-pencil);
+  border-color: var(--red-pencil);
+  color: var(--paper);
+}
+
+.button--small {
+  padding: 0.35rem 0.8rem;
+  font-size: var(--step--1);
+}
+
+/* Form fields */
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field > label,
+.field > .label {
+  font-weight: 600;
+  font-size: var(--step--1);
+}
+
+.field .hint {
+  font-size: var(--step--1);
+  color: var(--graphite);
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  background: var(--sheet);
+}
+
+.input:hover {
+  border-color: var(--graphite);
+}
+
+.input:focus-visible {
+  outline-offset: 0;
+  border-color: var(--ink);
+}
+
+textarea.input {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Tags and small markers */
+.tag {
+  display: inline-block;
+  padding: 0.08rem 0.6rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  text-decoration: none;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+
+a.tag:hover,
+.tag[aria-current='true'] {
+  border-color: var(--on-marker);
+  background: var(--marker);
+  color: var(--on-marker);
+}
+
+.notice {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--graphite);
+  background: var(--sheet);
+  border-radius: 0 8px 8px 0;
+}
+
+.notice--error {
+  border-left-color: var(--red-pencil);
+  color: var(--red-pencil);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,59 @@
+/*
+  Design tokens.
+
+  Light theme: pencil and fountain-pen ink on cool drafting paper.
+  Dark theme:  the same drawing as a blueprint, chalk lines on blue.
+*/
+
+:root {
+  /* Colour */
+  --paper: #f1f3f7;
+  --sheet: #fbfcfe;
+  --ink: #1b2559;
+  --graphite: #57607a;
+  --rule: #c5ccdb;
+  --marker: #ffe45c;
+  --on-marker: #1b2559;
+  --red-pencil: #c22f29;
+  --dot: rgb(27 37 89 / 0.17);
+  --code-bg: #e5e9f2;
+  --link-stripe: var(--marker);
+  --link-line: rgb(27 37 89 / 0.55);
+
+  /* Type */
+  --font-display: 'Shantell Sans Variable', 'Trebuchet MS', system-ui, sans-serif;
+  --font-body: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-code: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3125rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(1.9rem, 1.4rem + 2vw, 2.5rem);
+  --step-4: clamp(2.5rem, 1.2rem + 5.6vw, 4.6rem);
+
+  /* Space */
+  --gutter: clamp(1.1rem, 4vw, 2.5rem);
+  --page: 70rem;
+  --measure: 40rem;
+  --section: clamp(4rem, 9vw, 7.5rem);
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --paper: #16245c;
+  --sheet: #1c2c6e;
+  --ink: #eef2ff;
+  --graphite: #b4c0e8;
+  --rule: #3c4e98;
+  --marker: #ffe45c;
+  --on-marker: #16245c;
+  --red-pencil: #ffa397;
+  --dot: rgb(238 242 255 / 0.13);
+  --code-bg: #111d4d;
+  --link-stripe: transparent;
+  --link-line: var(--marker);
+
+  color-scheme: dark;
+}
