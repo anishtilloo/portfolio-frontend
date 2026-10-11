@@ -8,7 +8,7 @@ export const profile = {
   role: 'Software Engineer',
   location: 'Nagpur, India',
 
-  headline: 'I sketch systems, then build them.',
+  headline: 'I turn messy workflows into software people actually use.',
   intro:
     "I'm Anish, a full-stack engineer in Nagpur with nearly three years of owning features end to end, from database and API design through to the UI. At Claim Genius I work on an AI automation platform for vehicle inspection, and outside it I build LLM tools: a RAG document Q&A system and an LLM-powered pull request reviewer.",
 
@@ -147,8 +147,8 @@ export const offHours = [
     title: 'Stories',
     text: 'Anime, films, TV and a steady pile of fiction.',
   },
-  {
-    title: 'The kitchen',
-    text: 'I love food and cook with more enthusiasm than skill.',
-  },
+  // {
+  //   title: 'The kitchen',
+  //   text: 'I love food and cook with more enthusiasm than skill.',
+  // },
 ]
