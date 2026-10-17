@@ -8,7 +8,7 @@ export const profile = {
   role: 'Software Engineer',
   location: 'Nagpur, India',
 
-  headline: 'I turn messy workflows into software people actually use.',
+  headline: 'Chaos in, software out',
   intro:
     "I'm Anish, a full-stack engineer in Nagpur with nearly three years of owning features end to end, from database and API design through to the UI. At Claim Genius I work on an AI automation platform for vehicle inspection, and outside it I build LLM tools: a RAG document Q&A system and an LLM-powered pull request reviewer.",
 
@@ -32,7 +32,7 @@ export const work = {
   highlights: [
     {
       title: 'Average API response from ~30 s to ~0.4 s',
-      text: 'An API in Parts catalogue extraction and validation took about 30 seconds on every request. In the NestJS service behind it, I removed N+1 queries, added indexes and rewrote the main query with CTEs, which brought an uncached request down to 3–5 s. An in-memory cache now answers about 97% of requests in roughly 300 ms.',
+      text: 'An API in Internal Tool took about 30 seconds on every request. In the NestJS service behind it, I removed N+1 queries, added indexes and rewrote the main query with CTEs, which brought an uncached request down to 3–5 s. An in-memory cache now answers about 97% of requests in roughly 300 ms.',
     },
     {
       title: 'Vue 3 migration and a shared component library',
@@ -55,13 +55,13 @@ export const work = {
       text: 'I build and maintain the database functions behind the platform’s analytics: time-zone-aware CTEs, weekly time buckets, and array parameters so a single call can filter across many ids.',
     },
     {
-      title: 'Vision models as tools for AI agents',
-      text: 'I built a Python MCP server that exposes the company’s computer-vision models, such as dent, scratch and airbag detection, as tools an AI agent can call.',
+      title: 'Models as tools for AI agents',
+      text: 'I built a Python MCP server that exposes the models as tools an AI agent can call.',
     },
-    {
-      title: 'How the team works with AI',
-      text: 'I’m writing the company’s AI usage standard and leading the move to reusable agent skills, including a write-up and team session on what skills are and how to vet one before installing it.',
-    },
+    // {
+    //   title: 'How the team works with AI',
+    //   text: 'I’m writing the company’s AI usage standard and leading the move to reusable agent skills, including a write-up and team session on what skills are and how to vet one before installing it.',
+    // },
     {
       title: 'Reviews and planning',
       text: 'I review a junior engineer’s pull requests and help shape and assign the team’s tasks so each one can be owned end to end.',
@@ -94,7 +94,7 @@ export const projects: Project[] = [
   {
     name: 'Models MCP server',
     context: 'Claim Genius',
-    text: 'Wraps the company’s computer-vision model APIs as Model Context Protocol tools, so an agent can check a photo for damage the same way it calls any other tool.',
+    text: 'Wraps the model APIs as Model Context Protocol tools, so an agent can check a photo for damage the same way it calls any other tool.',
     stack: ['Python', 'FastMCP', 'uv'],
   },
   {
@@ -139,10 +139,10 @@ export const offHours = [
     url: 'https://www.instagram.com/sketchy_animated_life/',
     linkText: 'See the sketches',
   },
-  {
-    title: 'Sport, by the numbers',
-    text: 'Cricket, football, basketball, baseball and badminton. I watch with the stats open.',
-  },
+  // {
+  //   title: 'Sport, by the numbers',
+  //   text: 'Cricket, football, basketball, baseball and badminton. I watch with the stats open.',
+  // },
   {
     title: 'Stories',
     text: 'Anime, films, TV and a steady pile of fiction.',
