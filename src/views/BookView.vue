@@ -20,9 +20,9 @@ import { RouterLink } from 'vue-router'
 
 import DeskProps from '@/components/book/DeskProps.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
-import { education, favourites, offHours, profile, projects, work } from '@/content/profile'
+import { education, favourites, offHours, profile, projects, toolbox, work } from '@/content/profile'
 import { foldPage } from '@/lib/pageFold'
-import { line, rect, seeded, smooth } from '@/lib/rough'
+import { ellipse, line, seeded, smooth } from '@/lib/rough'
 
 /* ---------- Book geometry (in book pixels; the camera scales all of it) ---------- */
 
@@ -72,8 +72,21 @@ function handle(url: string, prefix = ''): string {
 
 /* ---------- Hand-drawn bits ---------- */
 
-const coverFrame = rect(30, 30, PAGE_W - 60, PAGE_H - 60, seeded(11), 0.8)
-const coverRule = line(150, 0, 310, 0, seeded(5), 0.6)
+const coverRule = [...line(150, 0, 214, 0, seeded(5), 0.5), ...line(246, 0, 310, 0, seeded(6), 0.5)]
+const coverEmblem = [ellipse(32, 32, 28, 27, seeded(12), 0.7), ellipse(32, 32, 23, 22, seeded(13), 0.6)]
+const initials = profile.name
+  .split(/\s+/)
+  .map((part) => part[0])
+  .join('')
+
+/** A pen circle around each chapter number. */
+const chapterRings = [seeded(3), seeded(9), seeded(15)].map((rnd) => ellipse(30, 30, 25, 22, rnd, 1))
+
+/** The everyday tools, shortened to fit an index card. */
+const dailyTools = toolbox.slice(0, 4).map((group) => ({
+  area: group.area,
+  tools: group.tools.slice(0, 2).join(' · '),
+}))
 const underlines = {
   work: line(2, 5, 198, 5, seeded(7), 0.7),
   done: line(2, 5, 198, 5, seeded(29), 0.7),
@@ -442,6 +455,7 @@ onBeforeUnmount(() => {
                 <p>{{ project.text }}</p>
                 <p class="stack muted">{{ project.stack.join(' · ') }}</p>
               </article>
+              <span class="coffee-ring" aria-hidden="true"></span>
               <p class="note note--next" aria-hidden="true">to be continued →</p>
               <p class="folio">4</p>
               <span class="crease crease--front" aria-hidden="true"></span>
@@ -449,6 +463,9 @@ onBeforeUnmount(() => {
             <div class="flap">
               <section class="face face--back sheet-paper page page--left" data-page="p5" aria-labelledby="off-title">
                 <p class="running">{{ profile.name }}</p>
+                <span class="chapter-no" aria-hidden="true">
+                  <svg viewBox="0 0 60 60"><path :d="chapterRings[2]" /></svg>3
+                </span>
                 <p class="kicker">Chapter three</p>
                 <h2 id="off-title" class="page__title">Off the clock</h2>
                 <svg class="underline" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true">
@@ -469,7 +486,7 @@ onBeforeUnmount(() => {
                     </a>
                   </li>
                 </ul>
-                <div class="shelf">
+                <div v-if="favourites.length" class="shelf">
                   <p class="kicker">On the shelf</p>
                   <dl>
                     <div v-for="group in favourites" :key="group.shelf" class="shelf__row">
@@ -498,15 +515,29 @@ onBeforeUnmount(() => {
               <ol class="highlights">
                 <li v-for="item in work.highlights" :key="item.title">{{ item.title }}</li>
               </ol>
-              <RouterLink class="more" :to="{ path: '/classic', hash: '#work' }">
-                the longer version →
-              </RouterLink>
+              <div class="page-foot">
+                <div class="index-card">
+                  <p class="index-card__title">Daily drivers</p>
+                  <dl>
+                    <div v-for="group in dailyTools" :key="group.area">
+                      <dt>{{ group.area }}</dt>
+                      <dd>{{ group.tools }}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <RouterLink class="more" :to="{ path: '/classic', hash: '#work' }">
+                  the longer version →
+                </RouterLink>
+              </div>
               <p class="folio">2</p>
               <span class="crease crease--front" aria-hidden="true"></span>
             </section>
             <div class="flap">
               <section class="face face--back sheet-paper page page--left" data-page="p3" aria-labelledby="built-title">
                 <p class="running">{{ profile.name }}</p>
+                <span class="chapter-no" aria-hidden="true">
+                  <svg viewBox="0 0 60 60"><path :d="chapterRings[1]" /></svg>2
+                </span>
                 <p class="kicker">Chapter two</p>
                 <h2 id="built-title" class="page__title">Things I’ve built</h2>
                 <svg class="underline" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true">
@@ -530,23 +561,33 @@ onBeforeUnmount(() => {
           <!-- Leaf 1: the hard cover / inside cover with where I work now -->
           <div ref="coverLeaf" class="leaf leaf--cover">
             <header class="side side--front cover" data-page="cover">
-              <svg class="cover__frame" :viewBox="`0 0 ${PAGE_W} ${PAGE_H}`" aria-hidden="true">
-                <path v-for="(d, i) in coverFrame" :key="i" :d="d" />
-              </svg>
-              <p class="cover__label">A portfolio</p>
-              <h1 class="cover__name">{{ profile.name }}</h1>
-              <p class="cover__role">{{ profile.role }}</p>
-              <svg class="cover__rule" viewBox="140 -6 180 12" aria-hidden="true">
+              <span class="cover__spine" aria-hidden="true"></span>
+              <span class="cover__corner cover__corner--top" aria-hidden="true"></span>
+              <span class="cover__corner cover__corner--bottom" aria-hidden="true"></span>
+              <!-- <p class="cover__label">A portfolio</p> -->
+              <div class="cover__plate">
+                <h1 class="cover__name">{{ profile.name }}</h1>
+                <p class="cover__role">{{ profile.role }}</p>
+              </div>
+              <svg class="cover__rule" viewBox="140 -8 180 16" aria-hidden="true">
                 <path v-for="(d, i) in coverRule" :key="i" :d="d" />
+                <path class="cover__diamond" d="M222 0 L230 -6 L238 0 L230 6 Z" />
               </svg>
               <p class="cover__intro">
                 <span v-for="text in profile.tagline" :key="text">{{ text }}</span>
               </p>
+              <svg class="cover__emblem" viewBox="0 0 64 64" aria-hidden="true">
+                <path v-for="(d, i) in coverEmblem" :key="i" :d="d" />
+                <text x="32" y="41">{{ initials }}</text>
+              </svg>
               <p class="cover__foot">{{ profile.location }} · {{ year }}</p>
             </header>
             <div class="side side--back inside-cover">
               <section class="sheet-paper page page--left" data-page="p1" aria-labelledby="work-title">
                 <p class="running">{{ profile.name }}</p>
+                <span class="chapter-no" aria-hidden="true">
+                  <svg viewBox="0 0 60 60"><path :d="chapterRings[0]" /></svg>1
+                </span>
                 <p class="kicker">Chapter one</p>
                 <h2 id="work-title" class="page__title">Where I work now</h2>
                 <svg class="underline" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true">
@@ -562,7 +603,7 @@ onBeforeUnmount(() => {
                   </svg>
                   still here, still learning
                 </p>
-                <p>{{ work.about }}</p>
+                <p class="dropcap">{{ work.about }}</p>
                 <div class="education">
                   <p class="kicker">Before that</p>
                   <p class="education__degree">{{ education.degree }}</p>
@@ -623,6 +664,10 @@ onBeforeUnmount(() => {
   --linen: #e6dcc4;
   --linen-deep: #c9b993;
   --stamp: #1f2a5a;
+  /* Navy leather for the spine, corners and boards */
+  --leather: #1e2856;
+  --leather-deep: #121939;
+  --foil-flat: #cfa955;
   /* Paper */
   --leaf: #f6efdf;
   --leaf-edge: #ddd0b2;
@@ -649,6 +694,8 @@ onBeforeUnmount(() => {
   --stitch: rgb(240 226 196 / 0.28);
   --linen: #d7ccb3;
   --linen-deep: #b0a17f;
+  --leather: #18204a;
+  --leather-deep: #0c1230;
   --leaf: #ebe2cd;
   --leaf-edge: #b8aa8a;
   --leaf-muted: #5b5a6c;
@@ -785,10 +832,11 @@ onBeforeUnmount(() => {
   width: var(--page-w);
   height: var(--page-h);
   border-radius: 2px 8px 8px 2px;
-  background-color: var(--linen-deep);
+  background-color: var(--leather);
+  background-image: var(--leather-grain);
   box-shadow:
     2px 3px 0 var(--leaf-edge),
-    3px 5px 0 var(--linen-deep),
+    3px 5px 0 var(--leather-deep),
     10px 26px 40px -8px rgb(30 15 0 / 0.55);
 }
 
@@ -812,7 +860,16 @@ onBeforeUnmount(() => {
   color: var(--leaf-ink);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.33 0 0 0 0 0.16 0 0 0 0.3 -0.07'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),
-    var(--gutter, none);
+    var(--gutter, none),
+    radial-gradient(circle, rgb(50 60 110 / 0.16) 0 0.9px, transparent 1.3px);
+  background-size:
+    220px 220px,
+    auto,
+    18px 18px;
+  background-position:
+    0 0,
+    0 0,
+    9px 9px;
   box-shadow: inset 0 0 50px rgb(150 110 50 / 0.12);
 }
 
@@ -847,9 +904,16 @@ onBeforeUnmount(() => {
   height: var(--paper-h);
 }
 
+.leaf--paper {
+  /* The leaf box stays over the right page even once turned; only the
+     visible faces should catch clicks, or the last page's links go dead. */
+  pointer-events: none;
+}
+
 .leaf--paper .face {
   position: absolute;
   inset: 0;
+  pointer-events: auto;
 }
 
 .leaf--paper .face--back {
@@ -939,10 +1003,11 @@ onBeforeUnmount(() => {
 
 .inside-cover {
   border-radius: 8px 2px 2px 8px;
-  background-color: var(--linen-deep);
+  background-color: var(--leather);
+  background-image: var(--leather-grain);
   box-shadow:
     -2px 3px 0 var(--leaf-edge),
-    -3px 5px 0 var(--linen-deep),
+    -3px 5px 0 var(--leather-deep),
     -10px 26px 40px -8px rgb(30 15 0 / 0.55);
 }
 
@@ -956,90 +1021,169 @@ onBeforeUnmount(() => {
 
 /* ---------- Cover ---------- */
 
+.book {
+  --leather-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.16 -0.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+}
+
+/* Quarter binding: linen boards, leather spine and corners, gold tooling. */
 .cover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 112px 56px 66px;
+  padding: 62px 34px 46px 106px;
   border-radius: 2px 8px 8px 2px;
+  overflow: hidden;
   text-align: center;
   color: var(--stamp);
   background-color: var(--linen);
   background-image:
-    /* the hinge */
-    linear-gradient(90deg, rgb(60 40 10 / 0.28), rgb(255 250 235 / 0.35) 3.5%, rgb(60 40 10 / 0.14) 5.5%, transparent 8.5%),
     /* linen weave */
     repeating-linear-gradient(0deg, rgb(120 95 50 / 0.07) 0 1px, transparent 1px 3px),
     repeating-linear-gradient(90deg, rgb(255 255 255 / 0.18) 0 1px, transparent 1px 3px),
-    radial-gradient(ellipse at 35% 25%, rgb(255 250 235 / 0.5), transparent 65%);
+    radial-gradient(ellipse at 55% 25%, rgb(255 250 235 / 0.5), transparent 65%);
   box-shadow: inset 0 0 40px rgb(120 90 40 / 0.18);
 }
 
-.cover__frame {
+.cover__spine,
+.cover__corner {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  background-color: var(--leather);
+}
+
+.cover__spine {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 74px;
+  background-image:
+    /* a single gold fillet where the leather meets the linen */
+    linear-gradient(
+      90deg,
+      transparent calc(100% - 6px),
+      rgb(207 169 85 / 0.55) calc(100% - 6px) calc(100% - 5px),
+      transparent calc(100% - 5px)
+    ),
+    /* the rounded hinge */
+    linear-gradient(90deg, rgb(0 0 0 / 0.4), rgb(255 255 255 / 0.1) 22%, transparent 45%, rgb(0 0 0 / 0.18)),
+    var(--leather-grain);
+  box-shadow: 2px 0 3px rgb(0 0 0 / 0.25);
+}
+
+.cover__corner {
+  right: 0;
+  width: 62px;
+  height: 62px;
+  filter: drop-shadow(-1px 1px 2px rgb(0 0 0 / 0.25));
+}
+
+.cover__corner--top {
+  top: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background-image: var(--leather-grain);
+}
+
+.cover__corner--bottom {
+  bottom: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background-image: var(--leather-grain);
+}
+
+.cover__label {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* The title plate: a leather label stamped in gold. */
+.cover__plate {
+  position: relative;
+  margin-top: 64px;
+}
+
+.cover__name {
+  font-family: 'Caveat Variable', var(--font-display);
+  font-size: 92px;
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--stamp);
+}
+
+.cover__role {
+  margin-top: 16px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  opacity: 0.7;
+}
+
+.cover__rule {
+  width: 180px;
+  height: 16px;
+  margin-top: 28px;
   overflow: visible;
 }
 
-.cover__frame path,
 .cover__rule path {
   fill: none;
   stroke: var(--stamp);
   stroke-width: 1.4;
   stroke-linecap: round;
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
-.cover__label {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
-.cover__name {
-  margin-top: 60px;
-  font-family: 'Caveat Variable', var(--font-display);
-  font-size: 104px;
-  font-weight: 600;
-  line-height: 0.86;
-  letter-spacing: -0.01em;
-  color: var(--hand-ink);
-  text-wrap: balance;
-}
-
-.cover__role {
-  margin-top: 26px;
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-
-.cover__rule {
-  width: 170px;
-  height: 14px;
-  margin-top: 30px;
-  overflow: visible;
+.cover__rule .cover__diamond {
+  fill: var(--stamp);
+  stroke: none;
+  opacity: 0.45;
 }
 
 .cover__intro {
+  position: relative;
   display: grid;
   gap: 2px;
-  margin-top: 28px;
-  font-size: 16px;
+  margin-top: 22px;
+  font-size: 15.5px;
   line-height: 1.5;
   opacity: 0.85;
 }
 
-.cover__foot {
+.cover__emblem {
+  width: 64px;
+  height: 64px;
   margin-top: auto;
+  overflow: visible;
+}
+
+.cover__emblem path {
+  fill: none;
+  stroke: var(--stamp);
+  stroke-width: 1.3;
+  opacity: 0.55;
+}
+
+.cover__emblem text {
+  font-family: 'Caveat Variable', var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--stamp);
+  opacity: 0.75;
+}
+
+.cover__foot {
+  position: relative;
+  margin-top: 10px;
   font-family: var(--font-display);
-  font-size: 13px;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  letter-spacing: 0.16em;
   opacity: 0.6;
 }
 
@@ -1081,9 +1225,12 @@ onBeforeUnmount(() => {
 .folio {
   position: absolute;
   bottom: 18px;
-  font-family: 'Caveat Variable', var(--font-display);
-  font-size: 20px;
-  color: var(--leaf-muted);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--leaf-ink);
+  opacity: 0.7;
 }
 
 .page--right .folio {
@@ -1156,6 +1303,127 @@ onBeforeUnmount(() => {
   font-size: 22px;
   transform: rotate(-2deg);
   transform-origin: left;
+}
+
+.chapter-no {
+  position: absolute;
+  top: 44px;
+  right: 38px;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  font-family: 'Caveat Variable', var(--font-display);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  color: #c22f29;
+}
+
+.chapter-no svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.chapter-no path {
+  fill: none;
+  stroke: #c22f29;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+.dropcap::first-letter {
+  float: left;
+  margin: 5px 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 0.8;
+  color: #c22f29;
+}
+
+.page-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  margin-bottom: 18px;
+}
+
+.page-foot .more {
+  margin: 0;
+}
+
+/* An index card held on with a strip of tape. */
+.index-card {
+  position: relative;
+  width: 214px;
+  padding: 12px 14px 10px;
+  transform: rotate(-2.5deg);
+  background:
+    linear-gradient(transparent 27px, rgb(194 47 41 / 0.45) 27px 28.5px, transparent 28.5px),
+    repeating-linear-gradient(transparent 0 18px, rgb(60 110 170 / 0.18) 18px 19px) 0 32px / 100% calc(100% - 32px) no-repeat,
+    #fffdf6;
+  box-shadow: 2px 4px 8px rgb(60 40 10 / 0.18);
+  font-size: 12px;
+  line-height: 19px;
+}
+
+.index-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 74px;
+  height: 20px;
+  margin-left: -37px;
+  transform: rotate(4deg);
+  background: rgb(242 201 76 / 0.55);
+  clip-path: polygon(3% 0, 97% 4%, 100% 50%, 96% 100%, 4% 96%, 0 50%);
+}
+
+.index-card__title {
+  font-family: 'Caveat Variable', var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--hand-ink);
+}
+
+.index-card dl {
+  margin: 6px 0 0;
+}
+
+.index-card dl div {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+
+.index-card dt {
+  font-weight: 700;
+}
+
+.index-card dd {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Someone put their mug down on this page. */
+.coffee-ring {
+  position: absolute;
+  left: 46px;
+  bottom: 60px;
+  width: 128px;
+  height: 124px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: rotate(-12deg);
+  background:
+    radial-gradient(circle at 54% 50%, transparent 57%, rgb(130 75 25 / 0.2) 60%, rgb(130 75 25 / 0.07) 64%, transparent 68%),
+    radial-gradient(circle at 46% 52%, transparent 60%, rgb(130 75 25 / 0.1) 63%, transparent 67%);
 }
 
 .note--next {

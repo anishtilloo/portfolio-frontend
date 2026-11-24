@@ -127,7 +127,7 @@ export const toolbox = [
   },
   {
     area: 'AI',
-    tools: ['RAG', 'Vector embeddings', 'Qdrant', 'Gemini API', 'Groq API', 'Model Context Protocol'],
+    tools: ['Claude Code', 'ChatGPT', 'RAG', 'Vector embeddings', 'Qdrant', 'Gemini API', 'Groq API', 'Model Context Protocol'],
   },
   { area: 'Languages', tools: ['JavaScript', 'TypeScript', 'Python', 'SQL', 'Java', 'Go', 'C++'] },
   { area: 'Tools', tools: ['Git', 'Docker', 'API documentation'] },
@@ -140,7 +140,7 @@ export const education = {
 }
 
 // The "On the shelf" list on the hobbies page of the book.
-export const favourites = [
+export const favourites: { shelf: string; titles: string[] }[] = [
   // { shelf: 'Anime', titles: ['Naruto', 'Dragon Ball Z', 'Attack on Titan', 'One Piece'] },
   // { shelf: 'Series', titles: ['Game of Thrones', 'Breaking Bad', 'Suits'] },
   // { shelf: 'Books', titles: ['Never Lie', 'Red Rising'] },
