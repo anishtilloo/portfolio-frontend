@@ -9,6 +9,11 @@ export const profile = {
   location: 'Nagpur, India',
 
   headline: 'Chaos in, software out',
+  // The two lines on the cover of the book on the home page.
+  tagline: [
+    'Full-stack engineer who builds features',
+    'end to end, plus LLM tools on the side.',
+  ],
   intro:
     "I'm Anish, a full-stack engineer in Nagpur with nearly three years of owning features end to end, from database and API design through to the UI. At Claim Genius I work on an AI automation platform for vehicle inspection, and outside it I build LLM tools: a RAG document Q&A system and an LLM-powered pull request reviewer.",
 
@@ -131,6 +136,13 @@ export const education = {
   school: 'St. Vincent Pallotti College of Engineering and Technology, Nagpur',
   period: '2019 to 2023',
 }
+
+// The "On the shelf" list on the hobbies page of the book.
+export const favourites = [
+  { shelf: 'Anime', titles: ['Naruto', 'Dragon Ball Z', 'Attack on Titan', 'One Piece'] },
+  { shelf: 'Series', titles: ['Game of Thrones', 'Breaking Bad', 'Suits'] },
+  { shelf: 'Books', titles: ['Never Lie', 'Red Rising'] },
+]
 
 export const offHours = [
   {

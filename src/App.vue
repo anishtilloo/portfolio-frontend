@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 
 import SiteFooter from '@/components/SiteFooter.vue'
 import SiteHeader from '@/components/SiteHeader.vue'
+
+const route = useRoute()
 </script>
 
 <template>
   <a class="skip button button--primary" href="#main">Skip to content</a>
-  <SiteHeader />
+  <SiteHeader v-if="!route.meta.bare" />
   <main id="main" tabindex="-1">
     <RouterView />
   </main>
-  <SiteFooter />
+  <SiteFooter v-if="!route.meta.bare" />
 </template>
 
 <style scoped>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
-import HomeView from '@/views/HomeView.vue'
+import BookView from '@/views/BookView.vue'
 
 const SITE = 'Anish Tilloo'
 
@@ -10,13 +10,22 @@ declare module 'vue-router' {
     /** Tab title. Pages that load their own title (a blog post) set it themselves. */
     title?: string
     requiresAuth?: boolean
+    /** Full-screen page: no site header or footer. */
+    bare?: boolean
   }
 }
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', name: 'home', component: HomeView },
+    { path: '/', name: 'home', component: BookView, meta: { bare: true } },
+    {
+      // The original scrolling portfolio, kept as it was.
+      path: '/classic',
+      name: 'classic',
+      component: () => import('@/views/HomeView.vue'),
+      meta: { title: 'Portfolio' },
+    },
     {
       path: '/blog',
       name: 'blog',

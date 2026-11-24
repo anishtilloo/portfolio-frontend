@@ -15,8 +15,9 @@ const auth = useAuthStore()
       <RouterLink to="/" class="header__name">{{ profile.name }}</RouterLink>
 
       <nav class="header__nav" aria-label="Main">
-        <RouterLink :to="{ path: '/', hash: '#work' }">Work</RouterLink>
-        <RouterLink :to="{ path: '/', hash: '#projects' }">Projects</RouterLink>
+        <RouterLink to="/">The book</RouterLink>
+        <RouterLink :to="{ path: '/classic', hash: '#work' }">Work</RouterLink>
+        <RouterLink :to="{ path: '/classic', hash: '#projects' }">Projects</RouterLink>
         <RouterLink to="/blog" active-class="is-current">Blog</RouterLink>
         <RouterLink to="/reading" active-class="is-current">Reading</RouterLink>
         <RouterLink v-if="auth.isSignedIn" to="/admin" active-class="is-current">
