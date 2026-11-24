@@ -8,11 +8,12 @@ export const profile = {
   role: 'Software Engineer',
   location: 'Nagpur, India',
 
-  headline: 'Chaos in, software out',
+  headline: 'Learning to think in systems.',
   // The two lines on the cover of the book on the home page.
   tagline: [
-    'Full-stack engineer who builds features',
-    'end to end, plus LLM tools on the side.',
+    'A Software Engineer learning to thinking in systems and harnessing the power of AI to build better software.',
+    // 'Full-stack engineer who builds features',
+    // 'end to end, plus LLM tools on the side.',
   ],
   intro:
     "I'm Anish, a full-stack engineer in Nagpur with nearly three years of owning features end to end, from database and API design through to the UI. At Claim Genius I work on an AI automation platform for vehicle inspection, and outside it I build LLM tools: a RAG document Q&A system and an LLM-powered pull request reviewer.",
@@ -21,6 +22,7 @@ export const profile = {
   contact: {
     email: 'tillooanish2612@gmail.com',
     github: 'https://github.com/anishtilloo',
+    x: 'https://x.com/Anish__Tilloo',
     linkedin: 'https://www.linkedin.com/in/anish-tilloo-799397195/',
     instagram: 'https://www.instagram.com/anishtilloo/',
     instagram1: 'https://www.instagram.com/sketchy_animated_life/',
@@ -139,9 +141,9 @@ export const education = {
 
 // The "On the shelf" list on the hobbies page of the book.
 export const favourites = [
-  { shelf: 'Anime', titles: ['Naruto', 'Dragon Ball Z', 'Attack on Titan', 'One Piece'] },
-  { shelf: 'Series', titles: ['Game of Thrones', 'Breaking Bad', 'Suits'] },
-  { shelf: 'Books', titles: ['Never Lie', 'Red Rising'] },
+  // { shelf: 'Anime', titles: ['Naruto', 'Dragon Ball Z', 'Attack on Titan', 'One Piece'] },
+  // { shelf: 'Series', titles: ['Game of Thrones', 'Breaking Bad', 'Suits'] },
+  // { shelf: 'Books', titles: ['Never Lie', 'Red Rising'] },
 ]
 
 export const offHours = [
@@ -157,10 +159,10 @@ export const offHours = [
   // },
   {
     title: 'Stories',
-    text: 'Anime, films, TV and a steady pile of fiction.',
+    text: ' Books, Anime, films, TV and a steady pile of fiction.',
   },
-  // {
-  //   title: 'The kitchen',
-  //   text: 'I love food and cook with more enthusiasm than skill.',
-  // },
+  {
+    title: 'Music',
+    text: 'I listen to a lot of music.',
+  },
 ]
