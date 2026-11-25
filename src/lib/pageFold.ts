@@ -32,6 +32,8 @@ export interface FoldState {
 }
 
 const HIDDEN = 'polygon(0 0, 0 0, 0 0)'
+/** Highest value of sin(πt)·(1 − t)² over 0..1. */
+const RISE_PEAK = 0.39974
 const px = (n: number) => `${n.toFixed(2)}px`
 
 function polygon(points: Point[]): string {
@@ -83,8 +85,10 @@ export function foldPage(progress: number, width: number, height: number, lift =
 
   // The corner's path: an arc over the spine. It rises early, which makes the
   // diagonal dog-ear, then settles so the page lands square on the left.
+  // Scaled so it peaks at exactly 1 (at turn ≈ 0.27): clamping it instead
+  // would put a kink in the corner's path, which shows up as a jerk.
   const angle = Math.PI * turn
-  const rise = Math.min(1, Math.sin(angle) * (1 - turn) ** 2 * 2.6)
+  const rise = (Math.sin(angle) * (1 - turn) ** 2) / RISE_PEAK
   const corner = { x: width, y: height }
   const moved = {
     x: width * Math.cos(angle),

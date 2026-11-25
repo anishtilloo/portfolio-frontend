@@ -185,6 +185,8 @@ interface PaperParts {
   flap: HTMLElement
   frontCrease: HTMLElement
   backCrease: HTMLElement
+  /** The turn last drawn, so unchanged leaves can be skipped. */
+  turn: number
 }
 let paperLeaves: PaperParts[] = []
 
@@ -220,7 +222,8 @@ function camera(cam: Cam) {
   }
 }
 
-const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
+/** Sine in-out: gentle enough that the middle of a turn doesn't lurch. */
+const ease = (t: number) => (1 - Math.cos(Math.PI * t)) / 2
 const mix = (a: number, b: number, t: number) => a + (b - a) * t
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n))
 
@@ -248,6 +251,10 @@ function render(at: number) {
   const rotate = mix(from.rotate, to.rotate, t)
   if (world.value) {
     world.value.style.transform = `scale(${scale}) rotate(${rotate}deg) translateX(${-x}px)`
+    // Give the scene its own GPU layer only while the camera moves, so a pan
+    // doesn't repaint the whole desk each frame. Dropping it at rest lets the
+    // text re-render crisply at the final zoom.
+    world.value.classList.toggle('is-moving', a.cam !== b.cam && raw > 0 && raw < 1)
   }
 
   const count = 1 + paperLeaves.length
@@ -264,6 +271,12 @@ function render(at: number) {
   // Paper pages fold over from the corner.
   paperLeaves.forEach((leaf, index) => {
     const turn = turnOf(index + 1)
+    if (turn === leaf.turn) return // nothing moved; skip the style work
+    leaf.turn = turn
+    // While a leaf turns, its faces, flap and creases get their own GPU
+    // layers: then changing the clip-path, shadow and crease transforms is
+    // composited instead of repainting the page's text and paper every frame.
+    leaf.root.classList.toggle('is-turning', turn > 0 && turn < 1)
     const fold = foldPage(turn, PAPER_W, PAPER_H)
     leaf.root.style.zIndex = leafZ(index + 1, turn, count)
     leaf.front.style.clipPath = fold.frontClip
@@ -290,12 +303,15 @@ function render(at: number) {
   if (chapter !== activeChapter.value) activeChapter.value = chapter
 }
 
+/** Where the track starts on the page. Measured on layout, not on every scroll. */
+let trackOffset = 0
+
 function trackTop(): number {
   return track.value ? track.value.getBoundingClientRect().top + window.scrollY : 0
 }
 
 function readScroll() {
-  target = clamp((window.scrollY - trackTop()) / unit, 0, timeline.total)
+  target = clamp((window.scrollY - trackOffset) / unit, 0, timeline.total)
 }
 
 function tick(now: number) {
@@ -319,20 +335,24 @@ function onScroll() {
 function layout() {
   const widthChanged = window.innerWidth !== viewW
   const heightJump = Math.abs(window.innerHeight - viewH) > 150
+  // Mobile address bars change the height while scrolling. Treat that as a
+  // scroll, not a resize: keep the camera's size and keep easing, so the book
+  // doesn't jump or rescale mid-turn.
+  if (!widthChanged && !heightJump) {
+    onScroll()
+    return
+  }
   viewW = window.innerWidth
   viewH = window.innerHeight
-  // Mobile address bars change the height while scrolling; only rebuild the
-  // track for real resizes, so the book doesn't jump mid-read.
-  if (widthChanged || heightJump) {
-    const roomH = (viewH - 170) / PAGE_H
-    const spread = Math.min((viewW - 24) / (PAGE_W * 2), roomH)
-    const page = Math.min((viewW - 12) / PAGE_W, roomH)
-    // Reading page by page only helps when width, not height, is what's short.
-    pageMode = spread < MIN_SPREAD_SCALE && page > spread * 1.2
-    timeline = buildTimeline(pageMode)
-    unit = viewH * 0.9
-    trackHeight.value = `${timeline.total * unit + viewH}px`
-  }
+  const roomH = (viewH - 170) / PAGE_H
+  const spread = Math.min((viewW - 24) / (PAGE_W * 2), roomH)
+  const page = Math.min((viewW - 12) / PAGE_W, roomH)
+  // Reading page by page only helps when width, not height, is what's short.
+  pageMode = spread < MIN_SPREAD_SCALE && page > spread * 1.2
+  timeline = buildTimeline(pageMode)
+  unit = viewH * 0.9
+  trackHeight.value = `${timeline.total * unit + viewH}px`
+  trackOffset = trackTop()
   readScroll()
   current = target
   render(current)
@@ -341,7 +361,7 @@ function layout() {
 function goTo(page: PageId) {
   const stop = timeline.stops[page]
   if (stop === undefined) return
-  window.scrollTo({ top: trackTop() + stop * unit, behavior: reducedMotion ? 'auto' : 'smooth' })
+  window.scrollTo({ top: trackOffset + stop * unit, behavior: reducedMotion ? 'auto' : 'smooth' })
 }
 
 /** Tabbing to a link on a page that isn't showing scrolls the book to it. */
@@ -367,7 +387,7 @@ function partsOf(root: HTMLElement | null): PaperParts[] {
   const frontCrease = pick('.face--front .crease')
   const backCrease = pick('.face--back .crease')
   if (!front || !back || !flap || !frontCrease || !backCrease) return []
-  return [{ root, front, back, flap, frontCrease, backCrease }]
+  return [{ root, front, back, flap, frontCrease, backCrease, turn: Number.NaN }]
 }
 
 onMounted(() => {
@@ -733,6 +753,11 @@ onBeforeUnmount(() => {
   transform-origin: 0 0;
 }
 
+/* Set by script only while the camera pans or zooms. */
+.world.is-moving {
+  will-change: transform;
+}
+
 /* ---------- The desk ---------- */
 
 .desk {
@@ -931,6 +956,13 @@ onBeforeUnmount(() => {
   pointer-events: auto;
 }
 
+/* Set by script only while this leaf is mid-turn (see render()). */
+.leaf--paper.is-turning .face,
+.leaf--paper.is-turning .flap,
+.leaf--paper.is-turning .crease {
+  will-change: transform, opacity;
+}
+
 /* Shading along the crease. Its left edge sits on the fold line. */
 .crease {
   position: absolute;
@@ -994,6 +1026,8 @@ onBeforeUnmount(() => {
   inset: 0;
   pointer-events: none;
   opacity: calc(var(--lift, 0) * 0.9);
+  /* its own layer, so fading it doesn't repaint the cover underneath */
+  will-change: opacity;
   background: linear-gradient(90deg, rgb(30 15 0 / 0.3), rgb(30 15 0 / 0.06) 70%, transparent);
 }
 
