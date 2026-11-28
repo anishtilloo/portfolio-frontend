@@ -87,6 +87,12 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    name: 'Network Monitoring System',
+    context: 'Personal project, since May 2025',
+    text: 'An admin platform for monitoring a network: it discovers devices over SNMP, polls them for CPU, memory, bandwidth and latency shows everything on dashboards and a location map, and protects it all with role-based access control.',
+    stack: ['Nuxt 4 (Vue 3, TypeScript)', 'Express 5', 'net-snmp', 'PostgreSQL'],
+  },
+  {
     name: 'Intelligent document Q&A',
     context: 'Personal project, since May 2025',
     text: 'Upload PDFs and ask questions about them. A Go API chunks each document, embeds it with Gemini into Qdrant, retrieves the relevant passages and has Llama 3.3 70B on Groq reason its way to an answer. JWT auth keeps each user’s documents and query history separate.',
@@ -98,18 +104,18 @@ export const projects: Project[] = [
     text: 'A backend for coaching staff to make strategy decisions from player performance, physical and wellness data. Spring Boot with JWT auth and role-based access over a multi-tenant PostgreSQL model managed with Flyway, with MongoDB planned for high-volume stat ingestion.',
     stack: ['Java', 'Spring Boot', 'PostgreSQL', 'Flyway', 'MongoDB'],
   },
-  {
-    name: 'Models MCP server',
-    context: 'Claim Genius',
-    text: 'Wraps the model APIs as Model Context Protocol tools, so an agent can check a photo for damage the same way it calls any other tool.',
-    stack: ['Python', 'FastMCP', 'uv'],
-  },
-  {
-    name: 'QA task companion',
-    context: 'Agent skill',
-    text: 'Takes a developer’s plain description of a finished task and produces two things for QA: a structured test-case sheet, and release notes written from the user’s side.',
-    stack: ['Agent skills', 'Prompt design'],
-  },
+  // {
+  //   name: 'Models MCP server',
+  //   context: 'Claim Genius',
+  //   text: 'Wraps the model APIs as Model Context Protocol tools, so an agent can check a photo for damage the same way it calls any other tool.',
+  //   stack: ['Python', 'FastMCP', 'uv'],
+  // },
+  // {
+  //   name: 'QA task companion',
+  //   context: 'Agent skill',
+  //   text: 'Takes a developer’s plain description of a finished task and produces two things for QA: a structured test-case sheet, and release notes written from the user’s side.',
+  //   stack: ['Agent skills', 'Prompt design'],
+  // },
   {
     name: 'This site',
     context: 'Personal project',
